@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lym.system.mapper.PlantMapper">
+
+    <resultMap id="BaseResultMap" type="com.lym.system.entity.Plant">
+        <id column="id" property="id"/>
+        <result column="plantname" property="plantname"/>
+        <result column="mainper" property="mainper"/>
+        <result column="plantsort" property="plantsort"/>
+        <result column="plantnumber" property="plantnumber"/>
+        <result column="plantintroduce" property="plantintroduce"/>
+        <result column="plantpicture" property="plantpicture"/>
+        <result column="plantgrade" property="plantgrade"/>
+        <result column="plantvalue" property="plantvalue"/>
+        <result column="measure" property="measure"/>
+        <result column="location" property="location"/>
+        <result column="plantqr" property="plantqr"/>
+    </resultMap>
+    <resultMap id="PlantByPage" type="com.lym.system.entity.Plant" extends="BaseResultMap">
+        <collection property="sort" ofType="com.lym.system.entity.Sort">
+            <id column="sid" property="id"/>
+            <result column="ssort" property="sort"/>
+        </collection>
+        <collection property="employee" ofType="com.lym.system.entity.Employee">
+            <id column="eid" property="id" />
+            <result column="ename" property="name" />
+        </collection>
+    </resultMap>
+    <select id="getAdminByPage" resultMap="PlantByPage">
+        SELECT
+        p.*,
+        s.id AS sid,
+        s.`sort` AS ssort,
+        e.id AS eid,
+        e.`name` AS ename
+        FROM
+        t_plant p,
+        t_sort s,
+        t_employee e
+        WHERE
+        p.plantsort = s.id
+        AND p.mainper = e.id
+        <if test="null!=plant.plantname and ''!=plant.plantname">
+            AND p.`plantname` LIKE CONCAT('%',#{plant.plantname}, '%' )
+        </if>
+        <if test="null!=plant.plantsort">
+            AND p.plantsort = #{plant.plantsort}
+        </if>
+        <if test="null!=plant.mainper">
+            AND p.mainper = #{plant.mainper}
+        </if>
+        ORDER BY
+        p.id
+    </select>
+</mapper>

@@ -1,0 +1,34 @@
+server:
+  # 端口
+  port: 8082
+spring:
+  # 邮件配置
+  mail:
+    # 邮件服务地址
+    host: smtp.163.com
+    # 协议
+    protocol: smtp
+    # 编码格式
+    default-encoding: utf-8
+    # 邮箱授权码
+    password: CEBTDLQLUTSZKJBX
+    # 发送者邮箱
+    username: w1822712846@163.com
+    # 端口
+    port: 25
+#    # 开启加密验证,qq特有的加密验证
+#    smpt:
+#      ssl:
+#        enable: true
+
+  # rabbitmq 配置
+  rabbitmq:
+    # 用户名
+    username: guest
+    # 密码
+    password: guest
+    # 服务器地址
+    host: 192.168.10.100
+    # 端口
+    port: 5672
+

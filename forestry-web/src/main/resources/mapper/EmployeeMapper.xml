@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lym.system.mapper.EmployeeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.lym.system.entity.Employee">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="gender" property="gender" />
+        <result column="birthday" property="birthday" />
+        <result column="idCard" property="idCard" />
+        <result column="wedlock" property="wedlock" />
+        <result column="nationId" property="nationId" />
+        <result column="nativePlace" property="nativePlace" />
+        <result column="politicId" property="politicId" />
+        <result column="email" property="email" />
+        <result column="phone" property="phone" />
+        <result column="address" property="address" />
+        <result column="departmentId" property="departmentId" />
+        <result column="minister" property="minister" />
+        <result column="engageForm" property="engageForm" />
+        <result column="tiptopDegree" property="tiptopDegree" />
+        <result column="specialty" property="specialty" />
+        <result column="school" property="school" />
+        <result column="beginDate" property="beginDate" />
+        <result column="workState" property="workState" />
+        <result column="workID" property="workID" />
+        <result column="contractTerm" property="contractTerm" />
+        <result column="conversionTime" property="conversionTime" />
+        <result column="notWorkDate" property="notWorkDate" />
+        <result column="beginContract" property="beginContract" />
+        <result column="endContract" property="endContract" />
+        <result column="workAge" property="workAge" />
+        <result column="salaryId" property="salaryId" />
+    </resultMap>
+
+    <resultMap id="EmployeeInfo" type="com.lym.system.entity.Employee" extends="BaseResultMap">
+        <collection property="nation" ofType="com.lym.system.entity.Nation" >
+            <id column="nid" property="id"/>
+            <result column="nname" property="name" />
+        </collection>
+        <collection property="politicsStatus" ofType="com.lym.system.entity.PoliticsStatus" >
+            <id column="pid" property="id"/>
+            <result column="pname" property="name" />
+        </collection>
+        <collection property="department" ofType="com.lym.system.entity.Departments" >
+            <id column="did" property="id"/>
+            <result column="dname" property="name" />
+        </collection>
+    </resultMap>
+    
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, gender, birthday, idCard, wedlock, nationId,
+        nativePlace, politicId, email, phone, address, departmentId,
+        minister, engageForm, tiptopDegree, specialty,
+        school, beginDate, workState, workID, contractTerm, conversionTime,
+        notWorkDate, beginContract, endContract, workAge, salaryId
+    </sql>
+
+    <update id="updateEmpEsid" parameterType="integer">
+        UPDATE t_employee e
+        SET e.salaryId = #{eSid}
+        WHERE
+            e.id = #{eid}
+    </update>
+
+    <!--分页获取所有员工-->
+    <select id="getEmployeePage" resultMap="EmployeeInfo">
+        select
+            e.*,
+            n.id nid,
+            n.`name` nname,
+            p.id pid,
+            p.`name` pname,
+            d.id did,
+            d.`name` dname
+            from
+            t_employee e,
+            t_nation n,
+            t_politics_status p,
+            t_departments d
+            <where>
+                e.nationId = n.id
+                and e.politicId = p.id
+                and e.departmentId = d.id
+                <if test="employee.name != null and employee.name != ''">
+                    and e.`name` LIKE CONCAT('%',#{employee.name},'%')
+                </if>
+                <if test="employee.nationId != null and employee.nationId > 0">
+                    and e.nationId = #{employee.nationId}
+                </if>
+                <if test="employee.departmentId != null and employee.departmentId > 0">
+                    and e.departmentId = #{employee.departmentId}
+                </if>
+                <if test="employee.engageForm != null and employee.engageForm > 0">
+                    and e.engageForm = #{employee.engageForm}
+                </if>
+                <if test="startDate != null and startDate != ''
+                          and endDate != null and endDate != ''">
+                    and e.beginDate BETWEEN #{startDate} and #{endDate}
+                </if>
+                order by e.minister
+            </where>
+    </select>
+
+    <!--获取员工最大编号-->
+    <select id="getMaxWorkID" resultType="string">
+        SELECT
+            max( workID )
+        FROM
+            t_employee;
+    </select>
+
+    <!--导出员工表格-->
+    <select id="getEmployeeList" parameterType="integer" resultMap="EmployeeInfo">
+        SELECT
+            e.*,
+            n.id nid,
+            n.`name` nname,
+            p.id pid,
+            p.`name` pname,
+            d.id did,
+            d.`name` dname
+        FROM
+            t_employee e,
+            t_nation n,
+            t_politics_status p,
+            t_departments d
+        WHERE
+            e.nationId = n.id
+            AND e.politicId = p.id
+            AND e.departmentId = d.id
+            <if test="id != null and id > 0">
+            AND e.id = #{id}
+            </if>
+        ORDER BY
+            e.id
+    </select>
+
+    <!--查询一些列添加需要的ID-->
+    <select id="getIdSelectNationByName" parameterType="Map" resultMap="EmployeeInfo">
+        SELECT
+            n.id nid,
+            p.id pid,
+            d.id did
+        FROM
+            t_nation n,
+            t_politics_status p,
+            t_departments d
+        WHERE
+            n.`name` = #{nationName}
+            AND p.`name` = #{politicsStatusName}
+            AND d.`name` = #{departmentName}
+    </select>
+
+    <resultMap id="salaryColumnList" type="com.lym.system.entity.Employee" extends="EmployeeInfo">
+        <!-- property 这个是 Employee 中的字段变量，javaType 里面是该字段具体的对象类型-->
+        <collection property="s" ofType="com.lym.system.entity.Salary">
+            <!--column sql语句查出来的字段，property 是 association 解析对象 salary 的字段-->
+            <id column="sid" property="id"/>
+            <result column="sbasicSalary" property="basicSalary" />
+            <result column="sbonus" property="bonus" />
+            <result column="lunchSalary" property="lunchSalary" />
+            <result column="strafficSalary" property="trafficSalary" />
+            <result column="sallSalary" property="allSalary" />
+            <result column="spensionBase" property="pensionBase" />
+            <result column="spensionPer" property="pensionPer" />
+            <result column="screateDate" property="createDate" />
+            <result column="smedicalBase" property="medicalBase" />
+            <result column="smedicalPer" property="medicalPer" />
+            <result column="saccumulationFundBase" property="accumulationFundBase" />
+            <result column="saccumulationFundPer" property="accumulationFundPer" />
+            <result column="sname" property="name" />
+        </collection>
+    </resultMap>
+    <!--获取所有员工和员工账套信息-->
+    <select id="getAllEmpSalary" resultMap="salaryColumnList">
+        SELECT
+            e.*,
+            s.id sid,
+            s.basicSalary sbasicSalary,
+            s.bonus sbonus,
+            s.lunchSalary lunchSalary,
+            s.trafficSalary strafficSalary,
+            s.allSalary sallSalary,
+            s.pensionBase spensionBase,
+            s.pensionPer spensionPer,
+            s.createDate screateDate,
+            s.medicalBase smedicalBase,
+            s.medicalPer smedicalPer,
+            s.accumulationFundBase saccumulationFundBase,
+            s.accumulationFundPer saccumulationFundPer,
+            s.`name` sname 
+        FROM
+            t_employee e,
+            t_salary s 
+        WHERE
+            e.salaryId = s.id 
+        ORDER BY
+            e.id
+    </select>
+</mapper>

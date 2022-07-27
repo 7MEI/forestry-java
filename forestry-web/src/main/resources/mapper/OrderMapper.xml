@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lym.system.mapper.OrderMapper">
+    <resultMap id="BaseResultMap" type="com.lym.system.entity.Order">
+        <id column="id" property="id"/>
+        <result column="applyid" property="applyid"/>
+        <result column="name" property="name"/>
+        <result column="telephone" property="telephone"/>
+        <result column="idnumeber" property="idnumeber"/>
+        <result column="email" property="email"/>
+        <result column="status" property="status"/>
+    </resultMap>
+    <resultMap id="OrderMap" type="com.lym.system.entity.Order" extends="BaseResultMap">
+        <collection property="applys" ofType="com.lym.system.entity.Apply">
+            <id column="aid" property="id"/>
+            <result column="subject" property="subject"/>
+            <result column="applyper" property="applyper"/>
+            <result column="telephone" property="telephone"/>
+            <result column="place" property="place"/>
+            <result column="picture" property="picture"/>
+            <result column="content" property="content"/>
+            <result column="applynum" property="applynum"/>
+            <result column="starttime" property="starttime"/>
+            <result column="endtime" property="endtime"/>
+            <result column="applydep" property="applydep"/>
+        </collection>
+    </resultMap>
+    <select id="getByPage" resultMap="OrderMap">
+        SELECT
+        o.*,
+        a.id AS aid,
+        a.applydep AS applydep,
+        a.subject AS subject,
+        a.applyper AS applyper,
+        a.telephone AS telephone,
+        a.place AS place,
+        a.picture AS picture,
+        a.content AS content,
+        a.applynum AS applynum,
+        a.starttime AS starttime,
+        a.endtime AS endtime
+        FROM
+        t_order o,
+          t_apply a
+        WHERE
+        o.applyid = a.id
+        <if test="null!=order.applyid">
+            AND o.applyid = #{order.applyid}
+        </if>
+        ORDER BY
+        a.id
+    </select>
+    <select id="getOrderList" parameterType="integer" resultMap="OrderMap">
+        SELECT
+        o.*,
+        a.id aid,
+        a.`subject` subject,
+        a.applyper applyper
+        FROM
+        t_order o,
+        t_apply a
+        WHERE
+        o.applyid = a.id
+        <if test="id != null and id > 0">
+            AND o.id = #{id}
+        </if>
+        ORDER BY
+        o.id
+    </select>
+    <select id="getIdSelectNationByName" parameterType="Map" resultMap="OrderMap">
+        SELECT
+            a.id aid
+        FROM
+            t_apply a
+        WHERE
+            a.subject = #{subject}
+    </select>
+</mapper>

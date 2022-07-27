@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lym.system.mapper.Admin2Mapper">
+    <resultMap id="BaseResultMap" type="com.lym.system.entity.Admin2">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="phone" property="phone"/>
+        <result column="telephone" property="telephone"/>
+        <result column="address" property="address"/>
+        <result column="enabled" property="enabled"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="picture" property="picture"/>
+        <result column="remark" property="enabled"/>
+        <result column="sex" property="sex"/>
+        <result column="departmentI" property="departmentI"/>
+    </resultMap>
+
+    <resultMap id="Admin2Info" type="com.lym.system.entity.Admin2" extends="BaseResultMap">
+        <association property="department" javaType="com.lym.system.entity.Department">
+            <id column="did" property="id"/>
+            <result column="dname" property="name"/>
+        </association>
+    </resultMap>
+
+
+    <select id="getAdminByPage" resultMap="Admin2Info">
+        SELECT
+            a.*,
+            d.id AS did,
+            d.`name` AS dname
+        FROM
+            t_admin a,
+            tb_department d
+        WHERE
+            a.departmentI = d.id
+          <if test="null!=admin2.name and ''!=admin2.name">
+              AND a.`name` LIKE CONCAT('%',#{admin2.name}, '%' )
+          </if>
+        <if test="null!=admin2.departmentI">
+            AND a.departmentI = #{admin2.departmentI}
+        </if>
+        <if test="null!=admin2.address">
+            AND a.`address` LIKE CONCAT('%',#{admin2.address}, '%' )
+        </if>
+        <if test="null!=admin2.sex and ''!=admin2.sex">
+            AND a.sex = #{admin2.sex}
+        </if>
+        <if test="null!=admin2.username">
+            AND a.`username` LIKE CONCAT('%',#{admin2.username}, '%' )
+        </if>
+        ORDER BY
+            a.id
+    </select>
+
+</mapper>

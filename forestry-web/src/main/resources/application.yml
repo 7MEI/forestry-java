@@ -1,0 +1,74 @@
+spring:
+  application:
+    name: forestry-web
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/yeb?useSSL=false&useUnicode=true&characterEncoding=Utf-8
+    username: root
+    password: LLL123456
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  # rabbitmq 配置
+  rabbitmq:
+    # 用户名
+    username: guest
+    # 密码
+    password: guest
+    # 服务器地址
+    host: 192.168.10.100
+    # 端口
+    port: 5672
+server:
+  port: 8081
+
+#org.apache.ibatis.logging.stdout.StdOutImpl
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+    map-underscore-to-camel-case: false
+    cache-enabled: false
+  global-config:
+    db-config:
+      logic-delete-field: deleted  # 全局逻辑删除的实体字段名(since 3.3.0,配置后可以忽略不配置步骤2)
+      logic-delete-value: 1 # 逻辑已删除值(默认为 1)
+      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
+  mapper-locations: classpath*:/mapper/*.xml
+#  type-aliases-package: com.xiaoge.system.entity
+
+alioss:
+  endpoint: oss-cn-guangzhou.aliyuncs.com
+  accessKeyId: LTAI5tPvrJPSj4Du1dud8f8n
+  accessKeySecret: G7AYqqIAWXRvtq47D9t2Si8OEXbBYj
+  bucketName: forestrys
+
+jwt:
+  #JWT存储的请求头
+  tokenHeader: Authorization
+  # JWT 加解密使用的密钥
+  secret: yeb-secret
+  # JWT的超期限时间（60*60*24）
+  expiration: 604800
+  # JWT 负载中拿到开头
+  tokenHead: Bearer
+
+redis:
+  #超出时间
+  timeout: 10000ms
+  #服务器地址
+  host: 127.0.0.1
+  #服务器端口
+  port: 8081
+  #数据库
+  database: 0
+  #密码
+  password: root
+  lettuce:
+    pool:
+      #最大连接数，默认8
+    max-active: 1024
+    #最大连接阻塞等待时机那，默认-1
+    max-idls: 200
+    #最小空闲连接
+    min-idle: 5
+

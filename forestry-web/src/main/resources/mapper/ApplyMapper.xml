@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lym.system.mapper.ApplyMapper">
+
+    <resultMap id="BaseApply" type="com.lym.system.entity.Apply">
+        <id column="id" property="id"/>
+        <result column="applydep" property="applydep"/>
+        <result column="subject" property="subject"/>
+        <result column="applyper" property="applyper"/>
+        <result column="content" property="content"/>
+        <result column="applynum" property="applynum"/>
+        <result column="starttime" property="starttime"/>
+        <result column="endtime" property="endtime"/>
+        <result column="place" property="place"/>
+        <result column="status" property="status"/>
+        <result column="checkname" property="checkname"/>
+        <result column="picture" property="picture"/>
+        <result column="reason" property="reason"/>
+        <result column="nowtime" property="nowtime"/>
+        <result column="telephone" property="telephone"/>
+    </resultMap>
+    <select id="getApplyByPage" resultMap="BaseApply">
+        SELECT
+        ap.*
+        FROM
+        t_apply ap
+        WHERE
+        ap.id = ap.id
+        AND
+        ap.status = 0
+        <if test="null!=apply.applyper and ''!=apply.applyper">
+            AND ap.`applyper` LIKE CONCAT('%',#{apply.applyper}, '%' )
+        </if>
+        <if test="null!=apply.checkname">
+            AND ap.`checkname` LIKE CONCAT('%',#{apply.checkname}, '%' )
+        </if>
+        ORDER BY
+        ap.nowtime desc
+    </select>
+    <select id="getUserByPage" resultMap="BaseApply">
+        SELECT
+        ap.*
+        FROM
+        t_apply ap
+        WHERE
+        ap.id = ap.id
+        AND
+        ap.status = 1
+        <if test="null!=apply.applyper and ''!=apply.applyper">
+            AND ap.`applyper` LIKE CONCAT('%',#{apply.applyper}, '%' )
+        </if>
+        <if test="null!=apply.checkname">
+            AND ap.`checkname` LIKE CONCAT('%',#{apply.checkname}, '%' )
+        </if>
+        ORDER BY
+        ap.nowtime desc
+    </select>
+</mapper>

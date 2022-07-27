@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lym.system.mapper.CommentMapper">
+    <resultMap id="BaseResultMap" type="com.lym.system.entity.Comment">
+        <id column="comment_id" property="commentId"/>
+        <result column="admin_name" property="adminName"/>
+        <result column="content" property="content"/>
+        <result column="create_time" property="createTime"/>
+        <result column="comment_like" property="commentLike"/>
+        <result column="avatar" property="avatar"/>
+        <result column="apply_id" property="applyId"/>
+    </resultMap>
+
+    <resultMap id="AllByComment" type="com.lym.system.entity.Comment" extends="BaseResultMap">
+        <collection property="childReplies" ofType="com.lym.system.entity.Reply">
+            <id column="reply_id" property="replyId"/>
+            <result column="reply_user_name" property="replyUserName"/>
+            <result column="reply_avatar" property="replyAvatar"/>
+            <result column="reply_content" property="replyContent"/>
+            <result column="reply_time" property="replyTime"/>
+            <result column="reply_num" property="replyNum"/>
+            <result column="reply_like" property="replyLike"/>
+            <result column="reply_to_id" property="replyToId"/>
+        </collection>
+    </resultMap>
+
+
+    <!-- 根据用户id查询菜单列表  -->
+    <select id="getAllComment" resultMap="AllByComment">
+        SELECT
+            t.*,
+            r.*
+        FROM
+            t_comment t LEFT JOIN t_reply r on t.comment_id = r.reply_to_id
+    </select>
+</mapper>

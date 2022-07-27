@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lym.system.mapper.UserMapper">
+<select id="findUserPage"  resultType="com.lym.system.entity.User">
+    select u.`id`, `username`, `nickname`, `email`, `avatar`, `phone_number`, `status`,
+           u.`create_time`, u.`modified_time`, `sex`, `salt`, `type`, `password`, `birth`,
+           `department_id`, `deleted`,d.name as name
+    from tb_user u
+             inner join tb_department d
+                        on u.department_id = d.id
+        ${ew.customSqlSegment}
+</select>
+</mapper>

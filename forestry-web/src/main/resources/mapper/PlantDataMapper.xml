@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lym.system.mapper.PlantDataMapper">
+
+    <resultMap id="BaseResultMap" type="com.lym.system.entity.PlantData">
+        <id column="id" property="id"/>
+        <result column="height" property="height"/>
+        <result column="stemleaf" property="stemleaf"/>
+        <result column="temperature" property="temperature"/>
+        <result column="diseases" property="diseases"/>
+        <result column="status" property="status"/>
+        <result column="rests" property="rests"/>
+        <result column="stempicture" property="stempicture"/>
+        <result column="diseapicture" property="diseapicture"/>
+        <result column="statuspicture" property="statuspicture"/>
+        <result column="writeper" property="writeper"/>
+        <result column="plantid" property="plantid"/>
+        <result column="writetime" property="writetime"/>
+    </resultMap>
+    <resultMap id="PlantDateByPage" type="com.lym.system.entity.PlantData" extends="BaseResultMap">
+        <collection property="plant" ofType="com.lym.system.entity.Plant">
+            <id column="id" property="id"/>
+            <result column="plantname" property="plantname"/>
+            <result column="mainper" property="mainper"/>
+            <result column="plantsort" property="plantsort"/>
+            <result column="plantnumber" property="plantnumber"/>
+            <result column="plantintroduce" property="plantintroduce"/>
+            <result column="plantpicture" property="plantpicture"/>
+            <result column="p lantgrade" property="plantgrade"/>
+            <result column="plantvalue" property="plantvalue"/>
+            <result column="measure" property="measure"/>
+            <result column="location" property="location"/>
+        </collection>
+    </resultMap>
+    <select id="getDateByPage" resultMap="PlantDateByPage">
+        SELECT
+        pd.*,
+        p.id AS id,
+        p.`plantname` AS plantname,
+        p.plantsort AS plantsort,
+        p.plantnumber AS plantnumber,
+        p.plantintroduce AS plantintroduce,
+        p.plantpicture AS plantpicture,
+        p.plantgrade AS plantgrade,
+        p.plantvalue AS plantvalue,
+        p.measure AS measure,
+        p.location AS location
+        FROM
+        t_plant_data pd,
+        t_plant p
+        WHERE
+        pd.plantid = p.id
+        <if test="null!=plantData.plantid and ''!=plantData.plantid">
+            AND pd.`plantid` LIKE CONCAT('%',#{plantData.plantid}, '%' )
+        </if>
+        <if test="null!=plantData.writeper">
+            AND pd.writeper = #{plantData.writeper}
+        </if>
+        ORDER BY
+        pd.writetime desc
+    </select>
+    <select id="getOrderList" parameterType="integer" resultMap="PlantDateByPage">
+        SELECT
+        a.*,
+        p.id AS id,
+        p.`plantname` AS plantname
+        FROM
+        t_plant_data a,
+        t_plant p
+        WHERE
+        a.plantid = p.id
+        ORDER BY
+        a.id
+    </select>
+</mapper>

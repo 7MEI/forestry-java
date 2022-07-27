@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lym.system.mapper.AdminMapper">
+    <resultMap id="BaseResultMap" type="com.lym.system.entity.Admin">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="phone" property="phone"/>
+        <result column="telephone" property="telephone"/>
+        <result column="address" property="address"/>
+        <result column="enabled" property="enabled"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="picture" property="picture"/>
+        <result column="CardId" property="CardId"/>
+        <result column="sex" property="sex"/>
+        <result column="departmentI" property="departmentI"/>
+    </resultMap>
+    <resultMap id="AdminByPage" type="com.lym.system.entity.Admin" extends="BaseResultMap">
+        <collection property="roles" ofType="com.lym.system.entity.Role">
+            <id column="rid" property="id"/>
+            <result column="rname" property="name"/>
+            <result column="rnameZh" property="nameZh"/>
+        </collection>
+        <collection property="department" ofType="com.lym.system.entity.Departments">
+            <id column="id" property="id" />
+            <result column="name" property="name" />
+            <result column="parentId" property="parentId" />
+            <result column="depPath" property="depPath" />
+            <result column="enabled" property="enabled" />
+            <result column="isParent" property="isParent" />
+        </collection>
+    </resultMap>
+
+    <select id="getMenusByUserId" resultType="com.lym.system.entity.Menu">
+    </select>
+    <select id="getList" resultType="com.lym.system.entity.Admin">
+            SELECT id,name,phone,telephone,address,enabled,username,password
+                 ,picture,remark
+            FROM
+                t_admin
+
+    </select>
+
+    <select id="getAdminByPage" resultMap="AdminByPage">
+        SELECT
+            a.*,
+            r.id AS rid,
+            r.`name` AS rname,
+            r.nameZh AS rnameZh,
+            d.id As did,
+            d.`name` AS dname,
+            d.parentId AS parentId,
+            d.depPath AS depPath,
+            d.isParent AS isParent
+        FROM
+            t_admin a,
+            t_admin_role ar,
+            t_role r,
+            t_departments d
+        WHERE
+            a.id = ar.adminId
+          AND ar.rid = r.id
+          AND a.departmentI = d.id
+        <if test="null!=admin.name and ''!=admin.name">
+            AND a.`name` LIKE CONCAT('%',#{admin.name}, '%' )
+        </if>
+        <if test="null!=admin.departmentI">
+            AND a.departmentI = #{admin.departmentI}
+        </if>
+        <if test="null!=admin.address">
+            AND a.`address` LIKE CONCAT('%',#{admin.address}, '%' )
+        </if>
+        <if test="null!=admin.sex and ''!=admin.sex">
+            AND a.`sex` = #{admin.sex}
+        </if>
+        <if test="null!=admin.username">
+            AND a.`username` LIKE CONCAT('%',#{admin.username}, '%' )
+        </if>
+        ORDER BY
+            a.id
+    </select>
+    <!--id : 当前登录用户ID，不能查到自己 a.id != #{id}-->
+    <select id="getAllAdmins" resultMap="AdminByPage">
+        SELECT
+        a.*,
+        r.id rid,
+        r.`name` rname,
+        r.nameZh rnameZh
+        FROM
+        t_admin a
+        INNER JOIN t_admin_role ar ON a.id = ar.adminId
+        INNER JOIN t_role r ON r.id = ar.rid
+        WHERE
+        a.id != #{id}
+        <if test="keywords != null and keywords != ''">
+            AND a.`name` LIKE concat('%', #{keywords}, '%')
+        </if>
+        ORDER BY
+        a.id;
+
+    </select>
+    <resultMap id="InfoMap" type="com.lym.system.entity.Admin" extends="BaseResultMap">
+        <collection property="roles" ofType="com.lym.system.entity.Role">
+            <id column="rid" property="id"/>
+            <result column="rname" property="name"/>
+            <result column="rnameZh" property="nameZh"/>
+        </collection>
+        <collection property="department" ofType="com.lym.system.entity.Departments">
+            <id column="id" property="id" />
+            <result column="dname" property="name" />
+            <result column="parentId" property="parentId" />
+            <result column="depPath" property="depPath" />
+            <result column="enabled" property="enabled" />
+            <result column="isParent" property="isParent" />
+        </collection>
+        <collection property="employee" ofType="com.lym.system.entity.Employee">
+            <id column="eid" property="id" />
+            <result column="idCard" property="idCard" />
+        </collection>
+    </resultMap>
+    <select id="getInfo" resultMap="InfoMap">
+        SELECT
+            a.*,
+            r.id rid,
+            r.`name` rname,
+            r.nameZh rnameZh,
+            d.`name` dname,
+            d.parentId ,
+            d.depPath,
+            d.isParent,
+            e.idCard,
+            e.id eid
+        FROM
+            t_admin a,
+            t_role r,
+            t_admin_role ar,
+            t_departments d,
+            t_employee e
+        WHERE
+            a.username = #{username}
+          AND a.id = ar.adminId
+          AND ar.rid = r.id
+          AND a.departmentI = d.id
+          AND a.CardId = e.idCard
+    </select>
+
+    <!-- 根据用户id查询用户名  -->
+    <select id="getUserName" resultType="java.lang.String">
+        select t.name
+        from t_admin t
+        WHERE t.id=#{id}
+    </select>
+</mapper>

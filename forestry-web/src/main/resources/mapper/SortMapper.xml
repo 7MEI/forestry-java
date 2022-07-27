@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lym.system.mapper.SortMapper">
+    <resultMap id="BaseResultMap" type="com.lym.system.entity.Sort">
+        <id column="id" property="id"/>
+        <result column="sort" property="sort"/>
+    </resultMap>
+    <resultMap id="SortByPage" type="com.lym.system.entity.Sort" extends="BaseResultMap">
+        <collection property="plant" ofType="com.lym.system.entity.Plant">
+            <id column="pid" property="id"/>
+            <result column="plantname" property="plantname"/>
+            <result column="plantsort" property="plantsort"/>
+            <result column="plantnumber" property="plantnumber"/>
+            <result column="plantintroduce" property="plantintroduce"/>
+            <result column="plantpicture" property="plantpicture"/>
+            <result column="plantgrade" property="plantgrade"/>
+            <result column="plantvalue" property="plantvalue"/>
+            <result column="measure" property="measure"/>
+            <result column="location" property="location"/>
+        </collection>
+    </resultMap>
+    <select id="getAdminByPage" resultMap="SortByPage">
+        SELECT
+        s.*
+        FROM
+        t_sort s
+        WHERE
+        s.id = s.id
+        <if test="null!=sort.sort and ''!=sort.sort">
+            AND s.`sort` LIKE CONCAT('%',#{sort.sort}, '%' )
+        </if>
+        ORDER BY
+        s.id
+    </select>
+</mapper>

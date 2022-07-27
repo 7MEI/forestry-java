@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lym.system.mapper.AnimalsMapper">
+
+    <resultMap id="BaseResultMap" type="com.lym.system.entity.Animals">
+        <id column="id" property="id"/>
+        <result column="anisortid" property="anisortid"/>
+        <result column="mainper" property="mainper"/>
+        <result column="chinesename" property="chinesename"/>
+        <result column="foreignname" property="foreignname"/>
+        <result column="jianjie" property="jianjie"/>
+        <result column="length" property="length"/>
+        <result column="weight" property="weight"/>
+        <result column="height" property="height"/>
+        <result column="feeding" property="feeding"/>
+        <result column="location" property="location"/>
+        <result column="breed" property="breed"/>
+        <result column="habit" property="habit"/>
+        <result column="ecohabit" property="ecohabit"/>
+        <result column="feature" property="feature"/>
+        <result column="distribution" property="distribution"/>
+        <result column="picture" property="picture"/>
+        <result column="mainper" property="mainper"/>
+        <result column="operator" property="operator"/>
+        <result column="number" property="number"/>
+        <result column="qr" property="qr"/>
+    </resultMap>
+    <resultMap id="AnimalsMap" type="com.lym.system.entity.Animals" extends="BaseResultMap">
+        <collection property="sort" ofType="com.lym.system.entity.AnimalSort">
+            <id column="sid" property="id"/>
+            <result column="schinesename" property="chinesename"/>
+        </collection>
+        <collection property="employee" ofType="com.lym.system.entity.Employee">
+            <id column="eid" property="id" />
+            <result column="ename" property="name" />
+        </collection>
+    </resultMap>
+    <select id="getAnimalsByPage" resultMap="AnimalsMap">
+        SELECT
+        a.*,
+        an.id AS sid,
+        an.`chinesename` AS schinesename,
+        e.id AS eid,
+        e.`name` AS ename
+        FROM
+        t_animals a,
+        t_animal_sort an,
+             t_employee e
+        WHERE
+        a.anisortid = an.id
+        AND a.mainper = e.id
+        <if test="null!=animals.chinesename and ''!=animals.chinesename">
+            AND a.`chinesename` LIKE CONCAT('%',#{animals.chinesename}, '%' )
+        </if>
+        <if test="null!=animals.anisortid">
+            AND a.anisortid = #{animals.anisortid}
+        </if>
+        <if test="null!=animals.mainper">
+            AND a.mainper = #{animals.mainper}
+        </if>
+        ORDER BY
+        a.id
+    </select>
+</mapper>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lym.system.mapper.AnimalDataMapper">
+    <resultMap id="BaseResultMap" type="com.lym.system.entity.AnimalData">
+        <id column="id" property="id"/>
+        <result column="height" property="height"/>
+        <result column="breedsituation" property="breedsituation"/>
+        <result column="writeper" property="writeper"/>
+        <result column="writetime" property="writetime"/>
+        <result column="health" property="health"/>
+        <result column="lengthdata" property="lengthdata"/>
+        <result column="weigthdata" property="weigthdata"/>
+        <result column="height" property="height"/>
+        <result column="growdata" property="growdata"/>
+        <result column="picturedata" property="picturedata"/>
+        <result column="reset" property="reset"/>
+        <result column="animalid" property="animalid"/>
+    </resultMap>
+    <resultMap id="DataMap" type="com.lym.system.entity.AnimalData" extends="BaseResultMap">
+        <collection property="animals" ofType="com.lym.system.entity.Animals">
+            <id column="id" property="id"/>
+            <result column="anisortid" property="anisortid"/>
+            <result column="chinesename" property="chinesename"/>
+            <result column="foreignname" property="foreignname"/>
+            <result column="jianjie" property="jianjie"/>
+            <result column="location" property="location"/>
+        </collection>
+    </resultMap>
+    <select id="getAnimalsByPage" resultMap="DataMap">
+        SELECT
+        ad.*,
+        a.id AS id,
+        a.`chinesename` AS chinesename,
+        a.`foreignname` AS foreignname,
+        a.anisortid AS anisortid,
+        a.location AS location
+        FROM
+        t_animal_data ad,
+        t_animals a
+        WHERE
+        ad.animalid = a.id
+        <if test="null!=animalData.animalid and ''!=animalData.animalid">
+            AND ad.`animalid` LIKE CONCAT('%',#{animalData.animalid}, '%' )
+        </if>
+        <if test="null!=animalData.writeper">
+            AND ad.writeper = #{animalData.writeper}
+        </if>
+        ORDER BY
+        ad.writetime desc
+    </select>
+    <select id="getOrderList" parameterType="integer" resultMap="DataMap">
+        SELECT
+            ad.*,
+            a.id AS id,
+            a.`chinesename` AS chinesename,
+            a.location AS location
+        FROM
+            t_animal_data ad,
+            t_animals a
+        WHERE
+            ad.animalid = a.id
+        ORDER BY
+            ad.writetime desc
+    </select>
+</mapper>

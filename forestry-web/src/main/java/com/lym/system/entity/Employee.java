@@ -1,0 +1,179 @@
+package com.lym.system.entity;
+
+import cn.afterturn.easypoi.excel.annotation.Excel;
+import cn.afterturn.easypoi.excel.annotation.ExcelEntity;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
+import java.time.LocalDate;
+
+/**
+ * <p>
+ * 
+ * </p>
+ *
+ * @author LHC
+ * @since 2021-06-25
+ */
+@Data
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
+@TableName("t_employee")
+@ApiModel(value="Employee对象", description="")
+public class Employee implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @ApiModelProperty(value = "员工编号")
+//    @Excel(name = "员工编号")
+    @TableId(value = "id", type = IdType.AUTO)
+    private Integer id;
+
+    @ApiModelProperty(value = "员工姓名")
+    @Excel(name = "员工姓名")
+    @NotBlank
+    private String name;
+
+    @ApiModelProperty(value = "性别")
+    @Excel(name = "性别")
+    private String gender;
+
+    @ApiModelProperty(value = "出生日期")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Excel(name = "出生日期",width = 30,format = "yyyy-MM-dd")
+    private LocalDate birthday;
+
+    @ApiModelProperty(value = "身份证号")
+    @Excel(name = "身份证号",width = 30)
+    private String idCard;
+
+    @ApiModelProperty(value = "婚姻状况")
+    @Excel(name = "婚姻状况")
+    private String wedlock;
+
+    @ApiModelProperty(value = "民族")
+    private Integer nationId;
+
+    @ApiModelProperty(value = "籍贯")
+    @Excel(name = "籍贯")
+    private String nativePlace;
+
+    @ApiModelProperty(value = "政治面貌")
+    private Integer politicId;
+
+    @ApiModelProperty(value = "邮箱")
+    @Excel(name = "邮箱",width = 30)
+    private String email;
+
+    @ApiModelProperty(value = "电话号码")
+    @Excel(name = "电话号码",width = 30)
+    private String phone;
+
+    @ApiModelProperty(value = "联系地址")
+    @Excel(name = "联系地址",width = 40)
+    private String address;
+
+    @ApiModelProperty(value = "所属部门")
+    private Integer departmentId;
+
+    @ApiModelProperty(value = "是否为部长")
+    @Excel(name = "部门职位")
+    private Integer minister;
+
+    @ApiModelProperty(value = "聘用形式")
+    @Excel(name = "聘用形式")
+    private String engageForm;
+
+    @ApiModelProperty(value = "最高学历")
+    @Excel(name = "最高学历")
+    private String tiptopDegree;
+
+    @ApiModelProperty(value = "所属专业")
+    @Excel(name = "所属专业")
+    private String specialty;
+
+    @ApiModelProperty(value = "毕业院校")
+    @Excel(name = "毕业院校")
+    private String school;
+
+    @ApiModelProperty(value = "入职日期")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Excel(name = "入职日期",width = 30,format = "yyyy-MM-dd")
+    private LocalDate beginDate;
+
+    @ApiModelProperty(value = "在职状态")
+    @Excel(name = "在职状态")
+    private String workState;
+
+    @ApiModelProperty(value = "工号")
+    @Excel(name = "工号")
+    private String workID;
+
+    // suffix = "年" 导入该字段数据时最后面加一个年字
+    @ApiModelProperty(value = "合同期限")
+    @Excel(name = "合同期限",suffix = "年")
+    private Double contractTerm;
+
+    @ApiModelProperty(value = "转正日期")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Excel(name = "转正日期",width = 30,format = "yyyy-MM-dd")
+    private LocalDate conversionTime;
+
+    @ApiModelProperty(value = "离职日期")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+//    @Excel(name = "离职日期",width = 30,format = "yyyy-MM-dd")
+    private LocalDate notWorkDate;
+
+    @ApiModelProperty(value = "合同起始日期")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Excel(name = "合同起始日期",width = 30,format = "yyyy-MM-dd")
+    private LocalDate beginContract;
+
+    @ApiModelProperty(value = "合同终止日期")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Excel(name = "合同终止日期",width = 30,format = "yyyy-MM-dd")
+    private LocalDate endContract;
+
+    @ApiModelProperty(value = "工龄")
+    private Integer workAge;
+
+    @ApiModelProperty(value = "工资账套ID")
+    private Integer salaryId;
+
+    @ApiModelProperty(value = "民族")
+    @TableField(exist = false)
+    @ExcelEntity(name = "民族")
+    private Nation nation;
+
+    @ApiModelProperty(value = "政治面貌")
+    @TableField(exist = false)
+    @ExcelEntity(name = "政治面貌")
+    private PoliticsStatus politicsStatus;
+
+    @ApiModelProperty(value = "部门")
+    @TableField(exist = false)
+    @ExcelEntity(name = "部门")
+    private Departments department;
+
+    @ApiModelProperty(value = "账套信息")
+    @TableField(exist = false)
+    private Salary s;
+
+}

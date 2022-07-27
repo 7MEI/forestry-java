@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lym.system.mapper.DepartmentMapper">
+<select id="findDeptAndCount" resultType="com.lym.system.entity.Department">
+
+</select>
+    <resultMap id="DepInfo" type="com.lym.system.entity.Department">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="phone" property="phone"/>
+        <result column="createTime" property="createTime"/>
+    </resultMap>
+    <select id="getAdminByPage" resultMap="DepInfo">
+        SELECT
+            d.*
+        FROM
+            tb_department d
+        WHERE
+            d.id = d.id
+        <if test="null!=department.name and ''!=department.name">
+            AND d.`name` LIKE CONCAT('%',#{department.name}, '%' )
+        </if>
+        <if test="null!=department.phone">
+            AND d.`phone` LIKE CONCAT('%',#{department.phone}, '%' )
+        </if>
+        ORDER BY
+            d.id
+
+    </select>
+
+</mapper>
